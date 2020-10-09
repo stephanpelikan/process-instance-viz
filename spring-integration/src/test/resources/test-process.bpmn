@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0yirs4d" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.1.1">
+  <bpmn:process id="testprocess" name="Test-Prozess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Test needed">
+      <bpmn:outgoing>Flow_09vy3hx</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_09vy3hx" sourceRef="StartEvent_1" targetRef="Activity_0lcmnvd" />
+    <bpmn:userTask id="UserTask_1ct20p2" name="Ask User for Input">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="IV" label="IV" type="string" defaultValue="${IV}" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1c9fr49</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zsnh62</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0zsnh62" sourceRef="UserTask_1ct20p2" targetRef="Gateway_11ivjq3" />
+    <bpmn:sequenceFlow id="Flow_1c9fr49" sourceRef="TimerEvent_1t7g2lk" targetRef="UserTask_1ct20p2" />
+    <bpmn:intermediateCatchEvent id="TimerEvent_1t7g2lk" name="Wait 30s">
+      <bpmn:incoming>Flow_1aran6b</bpmn:incoming>
+      <bpmn:outgoing>Flow_1c9fr49</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1xmeklt">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1aran6b" sourceRef="Activity_0lcmnvd" targetRef="TimerEvent_1t7g2lk" />
+    <bpmn:task id="Activity_0lcmnvd" name="Do something">
+      <bpmn:incoming>Flow_09vy3hx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aran6b</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_0x2vzae" name="Test completed">
+      <bpmn:incoming>Flow_180rm05</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_11ivjq3" default="Flow_180rm05">
+      <bpmn:incoming>Flow_0zsnh62</bpmn:incoming>
+      <bpmn:outgoing>Flow_180rm05</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zixdhe</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_180rm05" sourceRef="Gateway_11ivjq3" targetRef="EndEvent_0x2vzae" />
+    <bpmn:endEvent id="Event_152z9cj" name="Test aborted">
+      <bpmn:incoming>Flow_0zixdhe</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0zixdhe" sourceRef="Gateway_11ivjq3" targetRef="Event_152z9cj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${IV == 'XYZ'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testprocess">
+      <bpmndi:BPMNEdge id="Flow_0zsnh62_di" bpmnElement="Flow_0zsnh62">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="695" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09vy3hx_di" bpmnElement="Flow_09vy3hx">
+        <di:waypoint x="208" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c9fr49_di" bpmnElement="Flow_1c9fr49">
+        <di:waypoint x="468" y="117" />
+        <di:waypoint x="530" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aran6b_di" bpmnElement="Flow_1aran6b">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_180rm05_di" bpmnElement="Flow_180rm05">
+        <di:waypoint x="745" y="117" />
+        <di:waypoint x="822" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zixdhe_di" bpmnElement="Flow_0zixdhe">
+        <di:waypoint x="720" y="142" />
+        <di:waypoint x="720" y="230" />
+        <di:waypoint x="822" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="142" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ct20p2_di" bpmnElement="UserTask_1ct20p2">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_148zg6m_di" bpmnElement="TimerEvent_1t7g2lk">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="429" y="142" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14v1v15_di" bpmnElement="Activity_0lcmnvd">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0x2vzae_di" bpmnElement="EndEvent_0x2vzae">
+        <dc:Bounds x="822" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="803" y="142" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_11ivjq3_di" bpmnElement="Gateway_11ivjq3" isMarkerVisible="true">
+        <dc:Bounds x="695" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_152z9cj_di" bpmnElement="Event_152z9cj">
+        <dc:Bounds x="822" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="810" y="255" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

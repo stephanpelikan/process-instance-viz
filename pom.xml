@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.camunda.bpm.process-instance-viz</groupId>
+	<artifactId>process-instance-viz-root</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Process Instance Visualization</name>
+
+	<packaging>pom</packaging>
+
+	<properties>
+		<version.camunda-bpm.engine>7.9.0</version.camunda-bpm.engine>
+	</properties>
+
+	<modules>
+		<module>scenario-simulator</module>
+		<module>camunda-provider</module>
+		<module>spring-integration</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+					<configuration>
+						<release>8</release>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.5</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.camunda.bpm</groupId>
+				<artifactId>camunda-engine</artifactId>
+				<version>${version.camunda-bpm.engine}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.200</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.camunda.bpm.extension</groupId>
+				<artifactId>camunda-bpm-assert-scenario</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.camunda.bpm.extension</groupId>
+				<artifactId>camunda-bpm-process-test-coverage</artifactId>
+				<version>0.3.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
