@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 public class SimulatorRunnableImpl implements SimulatorRunnable {
 
 	private static final Logger logger = LoggerFactory.getLogger(SimulatorRunnableImpl.class);
-
+	
 	private static ProcessEngine simulatorEngine;
-
+	
 	private SimulatorProvider provider;
 
 	private String result;
@@ -29,21 +29,11 @@ public class SimulatorRunnableImpl implements SimulatorRunnable {
 
 			try {
 
-				if (simulatorEngine == null) {
-					// final var processEngineConfiguration = (ProcessEngineConfigurationImpl)
-					// processEngine
-					// .getProcessEngineConfiguration();
-					final ProcessCoverageInMemProcessEngineConfiguration simulatorConfiguration
-							= new ProcessCoverageInMemProcessEngineConfiguration();
-					// simulatorConfiguration.setProcessEnginePlugins(processEngineConfiguration.getProcessEnginePlugins());
-					simulatorConfiguration.setDeploymentSynchronized(true);
-					simulatorConfiguration.setDatabaseSchemaUpdate("true");
+				final ProcessEngine usedProcessEngine = getSimulatorEngine();
 
-					simulatorEngine = simulatorConfiguration.buildProcessEngine();
-				}
-
-				scenario = new SimulatorScenario(provider, simulatorEngine);
+				scenario = new SimulatorScenario(provider, usedProcessEngine);
 				scenario.execute();
+
 				result = scenario.createReport();
 
 			} catch (Throwable e) {
@@ -58,6 +48,24 @@ public class SimulatorRunnableImpl implements SimulatorRunnable {
 			scenario.cleanup();
 		}
 
+	}
+
+	private static ProcessEngine getSimulatorEngine() {
+		
+		if (simulatorEngine == null) {
+			// final var processEngineConfiguration = (ProcessEngineConfigurationImpl)
+			// processEngine
+			// .getProcessEngineConfiguration();
+			final ProcessCoverageInMemProcessEngineConfiguration simulatorConfiguration
+					= new ProcessCoverageInMemProcessEngineConfiguration();
+			// simulatorConfiguration.setProcessEnginePlugins(processEngineConfiguration.getProcessEnginePlugins());
+			simulatorConfiguration.setDeploymentSynchronized(true);
+			simulatorConfiguration.setDatabaseSchemaUpdate("true");
+
+			simulatorEngine = simulatorConfiguration.buildProcessEngine();
+		}
+		return simulatorEngine;
+		
 	}
 
 	@Override

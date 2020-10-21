@@ -16,9 +16,9 @@ public class Simulator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(Simulator.class);
 	
-	private volatile long counter = 0;
+	private static volatile long counter = 0;
 	
-	private SimulatorClassLoader loader;
+	private SimulatorClassLoader classLoader;
 
 	/**
 	 * The Simulator uses an isolated {@link ClassLoader} to avoid mutual interference of
@@ -29,7 +29,7 @@ public class Simulator {
 	 * @param parentClassLoader The parent {@link ClassLoader}
 	 */
 	public Simulator(final ClassLoader parentClassLoader) {
-		loader = new SimulatorClassLoader(parentClassLoader);
+		classLoader = new SimulatorClassLoader(parentClassLoader);
 	}
 	
 	/**
@@ -61,17 +61,17 @@ public class Simulator {
 		// get instance of SimulatorRunnableImpl
 		
 		final SimulatorRunnable runnable = (SimulatorRunnable)
-			loader.loadClass(
-				SimulatorRunnable.class.getName()
-				+ "Impl")
-			.getConstructor(SimulatorProvider.class)
-			.newInstance(provider);
+				classLoader.loadClass(
+					SimulatorRunnable.class.getName()
+					+ "Impl")
+				.getConstructor(SimulatorProvider.class)
+				.newInstance(provider);
 		
 		// start thread
 		
 		final Thread simulatorThread = new Thread(runnable);
 		simulatorThread.setName("PiVizSimulator#" + counter++);
-		simulatorThread.setContextClassLoader(loader);
+		simulatorThread.setContextClassLoader(classLoader);
 		
 		synchronized (runnable) {
 			simulatorThread.start();

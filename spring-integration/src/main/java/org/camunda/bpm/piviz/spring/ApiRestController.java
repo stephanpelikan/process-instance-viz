@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiRestController {
 
+	private static Simulator simulator = Simulator.newInstance();
+	
 	@Autowired
 	private ProcessEngine processEngine;
 	
@@ -19,9 +21,7 @@ public class ApiRestController {
 		
 		final SimulatorProviderImpl provider = new SimulatorProviderImpl(processEngine, processInstanceId);
 		
-		return Simulator
-				.newInstance()
-				.simulate(provider);
+		return simulator.simulate(provider);
 		
 	}
 	

@@ -13,9 +13,22 @@ public class SimulatorClassLoader extends URLClassLoader {
 		super(new URL[0], parent);
 	}
 	
+	/**
+	 * These classes are shared:
+	 * <ul>
+	 * <li>{@link SimulatorProvider}
+	 * <li>any inner class of {@link SimulatorProvider}
+	 * <li>{@link SimulatorRunnable}
+	 * <li>org.slf4j.*
+     * <li>org.h2.*
+	 * </ul>
+	 * but all other classes are isolated (except org.slf4j.* and org.h2.*).
+	 */
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		if (name.startsWith(SimulatorProvider.class.getName())
+		if (name.startsWith("org.slf4j")
+				|| name.startsWith("org.h2")
+				|| name.startsWith(SimulatorProvider.class.getName())
 				|| (name.startsWith(SimulatorRunnable.class.getName())
 						&& !name.startsWith(SimulatorRunnable.class.getName() + "Impl"))) {
 			return getParent().loadClass(name);
@@ -23,6 +36,10 @@ public class SimulatorClassLoader extends URLClassLoader {
 		return super.findClass(name);
 	}
 
+	/**
+	 * If the requested class is not shared with the parent class loader
+	 * then the class is reloaded from its origin location.
+	 */
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		
@@ -46,11 +63,6 @@ public class SimulatorClassLoader extends URLClassLoader {
 		
 		if (loadedClass == null) {
 			final Class<?> parentClass = super.loadClass(name);
-			
-			if (name.startsWith("org.slf4j")
-					|| name.startsWith("org.h2")) {
-				return parentClass;
-			}
 
 			final CodeSource codeSource = parentClass.getProtectionDomain().getCodeSource();
 			if (codeSource == null) {
