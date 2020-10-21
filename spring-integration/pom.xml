@@ -39,15 +39,6 @@
 			<artifactId>camunda-provider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<dependency>
-			<!-- Import dependency management from Spring Boot -->
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-dependencies</artifactId>
-			<version>${version.spring-boot}</version>
-			<scope>import</scope>
-			<type>pom</type>
-		</dependency>
 
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
