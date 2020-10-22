@@ -1,0 +1,11 @@
+.piviz-activity-completed .djs-visual> :nth-child(1) {
+  fill: green !important;
+}
+
+.piviz-activity-running .djs-visual> :nth-child(1) {
+  fill: grey !important;
+}
+
+.piviz-flow-completed .djs-visual> :nth-child(1) {
+  stroke: green !important;
+}

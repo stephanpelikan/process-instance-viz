@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.camunda.bpm.cockpit.plugin.spi.impl.AbstractCockpitPlugin;
+import org.camunda.bpm.piviz.cockpit.resources.RootResource;
 
 public class ProcessInstanceVisualizationPlugin extends AbstractCockpitPlugin {
 	
@@ -17,7 +18,7 @@ public class ProcessInstanceVisualizationPlugin extends AbstractCockpitPlugin {
 	@Override
 	public Set<Class<?>> getResourceClasses() {
 		final HashSet<Class<?>> result = new HashSet<>();
-		result.add(ProcessInstanceVisualizationPluginRootResource.class);
+		result.add(RootResource.class);
 		return result;
 	}
 	
