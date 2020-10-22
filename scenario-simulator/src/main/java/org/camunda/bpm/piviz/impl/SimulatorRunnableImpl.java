@@ -1,8 +1,10 @@
 package org.camunda.bpm.piviz.impl;
 
 import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.impl.history.HistoryLevel;
 import org.camunda.bpm.extension.process_test_coverage.junit.rules.ProcessCoverageInMemProcessEngineConfiguration;
 import org.camunda.bpm.piviz.SimulatorProvider;
+import org.camunda.bpm.piviz.result.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,7 @@ public class SimulatorRunnableImpl implements SimulatorRunnable {
 	
 	private SimulatorProvider provider;
 
-	private String result;
+	private Report result;
 
 	public SimulatorRunnableImpl(final SimulatorProvider provider) {
 		this.provider = provider;
@@ -53,12 +55,10 @@ public class SimulatorRunnableImpl implements SimulatorRunnable {
 	private static ProcessEngine getSimulatorEngine() {
 		
 		if (simulatorEngine == null) {
-			// final var processEngineConfiguration = (ProcessEngineConfigurationImpl)
-			// processEngine
-			// .getProcessEngineConfiguration();
 			final ProcessCoverageInMemProcessEngineConfiguration simulatorConfiguration
 					= new ProcessCoverageInMemProcessEngineConfiguration();
-			// simulatorConfiguration.setProcessEnginePlugins(processEngineConfiguration.getProcessEnginePlugins());
+			
+			simulatorConfiguration.setHistoryLevel(HistoryLevel.HISTORY_LEVEL_FULL);
 			simulatorConfiguration.setDeploymentSynchronized(true);
 			simulatorConfiguration.setDatabaseSchemaUpdate("true");
 
@@ -69,7 +69,7 @@ public class SimulatorRunnableImpl implements SimulatorRunnable {
 	}
 
 	@Override
-	public String getResult() {
+	public Report getResult() {
 		return result;
 	}
 

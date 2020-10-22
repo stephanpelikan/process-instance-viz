@@ -35,6 +35,9 @@ import org.camunda.bpm.model.xml.impl.util.ModelTypeException;
 import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.camunda.bpm.piviz.SimulatorProvider;
 import org.camunda.bpm.piviz.SimulatorProvider.ActivityState;
+import org.camunda.bpm.piviz.result.Element;
+import org.camunda.bpm.piviz.result.ElementStatus;
+import org.camunda.bpm.piviz.result.Report;
 import org.camunda.bpm.scenario.ProcessScenario;
 import org.camunda.bpm.scenario.Scenario;
 import org.camunda.bpm.scenario.act.BusinessRuleTaskAction;
@@ -120,8 +123,29 @@ public class SimulatorScenario implements ProcessScenario {
 		
 	}
 
-	public String createReport() {
-		return SimulatorBpmnJsReport.generateReport(simulatedProcessDefinitionKey, coverageTestRunState);
+	public Report createReport() {
+		
+		// return SimulatorBpmnJsReport.generateReport(simulatedProcessDefinitionKey, coverageTestRunState);
+		final MethodCoverage coverage = coverageTestRunState.getCurrentTestMethodCoverage();
+        
+		final Report result = new Report();
+		
+		coverage.getCoveredFlowNodes(simulatedProcessDefinitionKey)
+				.stream()
+				.map(flowNode -> new Element(
+						flowNode.getElementId(),
+						flowNode.hasEnded() ? ElementStatus.COMPLETED : ElementStatus.RUNNING))
+				.forEach(result::addElement);
+        
+        coverage.getCoveredSequenceFlowIds(simulatedProcessDefinitionKey)
+				.stream()
+				.map(sequenceFlow -> new Element(
+						sequenceFlow,
+						ElementStatus.COMPLETED))
+				.forEach(result::addElement);
+        
+        return result;
+
 	}
 	
 	public void cleanup() {

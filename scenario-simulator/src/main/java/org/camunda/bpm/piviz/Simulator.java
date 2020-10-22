@@ -2,6 +2,7 @@ package org.camunda.bpm.piviz;
 
 import org.camunda.bpm.piviz.impl.SimulatorClassLoader;
 import org.camunda.bpm.piviz.impl.SimulatorRunnable;
+import org.camunda.bpm.piviz.result.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ public class Simulator {
 	 * @return The details of the simulation
 	 * @throws Exception Something went wrong
 	 */
-	public Object simulate(final SimulatorProvider provider) throws Exception {
+	public Report simulate(final SimulatorProvider provider) throws Exception {
 
 		// get instance of SimulatorRunnableImpl
 		

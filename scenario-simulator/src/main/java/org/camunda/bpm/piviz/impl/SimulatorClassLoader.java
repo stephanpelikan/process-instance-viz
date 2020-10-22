@@ -6,6 +6,7 @@ import java.security.CodeSource;
 
 import org.camunda.bpm.engine.impl.util.ClockUtil;
 import org.camunda.bpm.piviz.SimulatorProvider;
+import org.camunda.bpm.piviz.result.Report;
 
 public class SimulatorClassLoader extends URLClassLoader {
 
@@ -28,6 +29,7 @@ public class SimulatorClassLoader extends URLClassLoader {
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		if (name.startsWith("org.slf4j")
 				|| name.startsWith("org.h2")
+				|| name.startsWith(Report.class.getPackage().getName())
 				|| name.startsWith(SimulatorProvider.class.getName())
 				|| (name.startsWith(SimulatorRunnable.class.getName())
 						&& !name.startsWith(SimulatorRunnable.class.getName() + "Impl"))) {
