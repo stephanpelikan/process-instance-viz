@@ -7,3 +7,5 @@ camunda:
         admin-user:
             id: admin
             password: admin
+        filter:
+            create: all-tasks

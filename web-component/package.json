@@ -1,0 +1,21 @@
+{
+  "name": "process-instance-viz",
+  "version": "0.0.1",
+  "description": "Process Instance Visualization",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "npm run start:dev",
+    "start:dev": "webpack-dev-server --config ./webpack/webpack.dev.js --hotOnly --watch --mode \"development\" --environment \"development\"",
+    "build": "npm run cleanup && webpack --config ./webpack/webpack.prod.js --profile --env.stats=minimal"
+  },
+  "author": "",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "preact": "^10.5.4",
+    "preact-custom-element": "^4.2.1",
+    "tslib": "^2.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}

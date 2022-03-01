@@ -1,5 +1,7 @@
 package org.camunda.bpm.piviz.cockpit.testapp;
 
+import java.util.HashMap;
+
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent;
@@ -20,7 +22,9 @@ public class TestProcessRunner {
 	@EventListener
 	public void startTestProcess(final ProcessApplicationStartedEvent event) {
 
-		final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testprocess");
+		final HashMap<String, Object> variables = new HashMap<>();
+		variables.put("IV", "ABC");
+		final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testprocess", variables);
 		logger.info("Startet testprocess: http://localhost:8080/camunda/app/cockpit/default/#/process-instance/{}/runtime", processInstance.getId());
 		
 	}

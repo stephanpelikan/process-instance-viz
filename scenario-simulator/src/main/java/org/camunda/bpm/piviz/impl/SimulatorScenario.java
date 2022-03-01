@@ -28,6 +28,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowNode;
 import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
+import org.camunda.bpm.model.bpmn.instance.ServiceTask;
 import org.camunda.bpm.model.bpmn.instance.UserTask;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaExecutionListener;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaTaskListener;
@@ -108,8 +109,6 @@ public class SimulatorScenario implements ProcessScenario {
 				.collect(Collectors.toMap(h -> h.name, h -> h.value));
 		logger.info("Setting start variables: {}", variables);
 		
-//		final var startActivity = activities.get(0);
-//		if (startActivity.getActivityType().equals("startEvent")) {
 		try {
 			ClockUtil.setTrackStart();
 			Scenario.run(this)
@@ -119,13 +118,11 @@ public class SimulatorScenario implements ProcessScenario {
 		} catch (NotYetCompletedException e) {
 			// ignore this
 		}
-//		}
 		
 	}
 
 	public Report createReport() {
 		
-		// return SimulatorBpmnJsReport.generateReport(simulatedProcessDefinitionKey, coverageTestRunState);
 		final MethodCoverage coverage = coverageTestRunState.getCurrentTestMethodCoverage();
         
 		final Report result = new Report();
@@ -189,6 +186,9 @@ public class SimulatorScenario implements ProcessScenario {
 	
 	private BpmnModelInstance adoptModel(BpmnModelInstance model) {
 		
+		// replace implemenation by scenario based implementation
+		removeAllTaskImplemenation(model);
+		
 		// remove all custom listeners
 		model.getModelElementsByType(BaseElement.class)
 				.forEach(node -> removeAllListeners(CamundaExecutionListener.class, node));
@@ -202,6 +202,22 @@ public class SimulatorScenario implements ProcessScenario {
 				.forEach(node -> replaceCustomListenersByVariableListener(node));
 		
 		return model;
+		
+	}
+	
+	private void removeAllTaskImplemenation(BpmnModelInstance model) {
+		
+		model.getModelElementsByType(ServiceTask.class)
+				.forEach(task -> {
+				    task.setCamundaType("external");
+				    task.setCamundaTopic("scenario");
+				});
+		
+	}
+	
+	private void removeAllFlowNodeConditions(BpmnModelInstance model) {
+		
+		
 		
 	}
 	
@@ -415,8 +431,28 @@ public class SimulatorScenario implements ProcessScenario {
 
 	@Override
 	public ServiceTaskAction waitsAtServiceTask(String activityId) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final SimulatorProvider.ActivityHistory history = getCurrentHistory(activityId);
+		final SimulatorProvider.ActivityState state = history.state;
+
+		if (state == ActivityState.RUNNING) {
+			return task -> { throw new NotYetCompletedException(); };
+		}
+		
+		if (state == ActivityState.COMPLETED) {
+			return task -> task.complete();
+		}
+		
+		if (state == ActivityState.ERROR) {
+//			return timer-> simulatorEngine.getRuntimeService()
+//					.createIncident("failedJob", timer.getExecutionId(), null);
+		}
+		
+		// CANCELLED: Should be forced by the engine. If not
+		// it was forced by the user so, the process instance needs to be deleted
+		return timer -> simulatorEngine.getRuntimeService()
+				.deleteProcessInstance(timer.getProcessInstanceId(), null);
+
 	}
 
 	@Override
